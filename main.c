@@ -62,6 +62,10 @@ int main(void) {
                 gerarResumoCSV(arquivos, numArquivos);
                 aguardarEnter();
                 break;
+            case 3:
+                gerarCSVPorMunicipio();
+                aguardarEnter();
+                break;
             case 0:
                 printf("Saindo...\n");
                 break;

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <locale.h>
 #include "lista.h"
 
@@ -77,7 +78,7 @@ static int extrairCamposCSV(const char *linha, char campos[][TAM_CAMPO_CSV], int
             continue;
         }
 
-        if (c == ',' && !emAspas) {
+        if ((c == ',' || c == ';') && !emAspas) {
             campos[indiceCampo][indiceChar] = '\0';
             indiceCampo++;
             indiceChar = 0;
@@ -100,6 +101,50 @@ static int extrairCamposCSV(const char *linha, char campos[][TAM_CAMPO_CSV], int
     }
 
     return indiceCampo;
+}
+
+static void converterSeparadorLinha(const char *origem, char *destino, size_t tamanhoDestino) {
+    size_t j = 0;
+    int emAspas = 0;
+
+    for (size_t i = 0; origem[i] != '\0' && j < tamanhoDestino - 1; i++) {
+        char c = origem[i];
+
+        if (c == '"') {
+            emAspas = !emAspas;
+        }
+
+        if (c == ',' && !emAspas) {
+            c = ';';
+        }
+
+        destino[j++] = c;
+    }
+
+    destino[j] = '\0';
+}
+
+static void normalizarTexto(char *texto) {
+    size_t inicio = 0;
+    size_t fim = strlen(texto);
+
+    while (texto[inicio] != '\0' && isspace((unsigned char)texto[inicio])) {
+        inicio++;
+    }
+
+    while (fim > inicio && isspace((unsigned char)texto[fim - 1])) {
+        fim--;
+    }
+
+    if (inicio > 0) {
+        memmove(texto, texto + inicio, fim - inicio);
+    }
+
+    texto[fim - inicio] = '\0';
+
+    for (size_t i = 0; texto[i] != '\0'; i++) {
+        texto[i] = (char)toupper((unsigned char)texto[i]);
+    }
 }
 
 static int encontrarOuCriarTribunal(AcumuladoTribunal tribunais[], int *qtdTribunais, const char *sigla) {
@@ -131,6 +176,7 @@ void aguardarEnter(void) {
 void concatenarArquivosCSV(const char *const *arquivos, int numArquivos) {
     FILE *entrada, *saida;
     char buffer[40000];
+    char linhaConvertida[40000];
     int primeiroArquivo = 1;
 
     saida = fopen("baseDeDadosTotal.csv", "w");
@@ -152,7 +198,8 @@ void concatenarArquivosCSV(const char *const *arquivos, int numArquivos) {
         }
 
         while (fgets(buffer, sizeof(buffer), entrada)) {
-            fprintf(saida, "%s", buffer);
+            converterSeparadorLinha(buffer, linhaConvertida, sizeof(linhaConvertida));
+            fprintf(saida, "%s", linhaConvertida);
         }
 
         primeiroArquivo = 0;
@@ -250,7 +297,7 @@ void gerarResumoCSV(const char *const *arquivos, int numArquivos) {
 
     fclose(entrada);
 
-    fprintf(saida, "sigla_tribunal,total_julgados_2026,Meta1,Meta2A,Meta2Ant,Meta4A,Meta4B\n");
+    fprintf(saida, "sigla_tribunal;total_julgados_2026;Meta1;Meta2A;Meta2Ant;Meta4A;Meta4B\n");
 
     for (int i = 0; i < qtdTribunais; i++) {
         AcumuladoTribunal *t = &tribunais[i];
@@ -287,7 +334,7 @@ void gerarResumoCSV(const char *const *arquivos, int numArquivos) {
 
         fprintf(
             saida,
-            "%s,%.0f,%.6f,%.6f,%.6f,%.6f,%.6f\n",
+            "%s;%.0f;%.6f;%.6f;%.6f;%.6f;%.6f\n",
             t->sigla,
             t->julgados_2026,
             meta1,
@@ -309,6 +356,7 @@ void mostrarMenu(void) {
     printf("========================================\n\n");
     printf("1 - Concatenar todos os arquivos CSV\n");
     printf("2 - Gerar resumo dos arquivos CSV\n");
+    printf("3 - Gerar arquivo por municipio\n");
     printf("0 - Sair\n\n");
     printf("Escolha uma opcao: ");
 }
@@ -326,4 +374,69 @@ void configurarAcentuacao() {
         // Para Linux/Mac, configura locale para UTF-8
         setlocale(LC_ALL, "");
     #endif
+}
+
+// função 3
+
+void gerarCSVPorMunicipio(void) {
+    char municipio[64];
+    int totalOcorrencias = 0;
+    printf("Digite o nome do municipio (ex: MACAPA): ");
+    if (fgets(municipio, sizeof(municipio), stdin) == NULL) {
+        return;
+    }
+    municipio[strcspn(municipio, "\r\n")] = 0;
+    normalizarTexto(municipio);
+
+    if (municipio[0] == '\0') {
+        printf("Municipio invalido.\n");
+        return;
+    }
+
+    FILE *entrada = fopen("baseDeDadosTotal.csv", "r");
+    if (entrada == NULL) {
+        perror("Erro ao abrir baseDeDadosTotal.csv");
+        return;
+    }
+
+    char nomeArquivo[128];
+    snprintf(nomeArquivo, sizeof(nomeArquivo), "%s.csv", municipio);
+    FILE *saida = fopen(nomeArquivo, "w");
+    if (saida == NULL) {
+        perror("Erro ao criar arquivo de municipio");
+        fclose(entrada);
+        return;
+    }
+
+    char linha[40000];
+    // Copia cabeçalho
+    if (fgets(linha, sizeof(linha), entrada)) {
+        fprintf(saida, "%s", linha);
+    }
+
+    while (fgets(linha, sizeof(linha), entrada)) {
+        char campos[MAX_CAMPOS_CSV][TAM_CAMPO_CSV];
+        int qtdCampos = extrairCamposCSV(linha, campos, MAX_CAMPOS_CSV);
+
+        int municipio_oj = 5;
+
+        if (qtdCampos > municipio_oj) {
+            normalizarTexto(campos[municipio_oj]);
+        }
+
+        if (qtdCampos > municipio_oj && strcmp(campos[municipio_oj], municipio) == 0) {
+            fprintf(saida, "%s", linha);
+            totalOcorrencias++;
+        }
+    }
+
+    fclose(entrada);
+    fclose(saida);
+
+    printf("Arquivo '%s' gerado com sucesso.\n", nomeArquivo);
+    printf("Total de ocorrencias encontradas para '%s': %d\n", municipio, totalOcorrencias);
+
+    if (totalOcorrencias == 0) {
+        printf("Nenhum registro encontrado para o municipio informado.\n");
+    }
 }

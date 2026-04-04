@@ -13,6 +13,7 @@ void aguardarEnter(void);
 void concatenarArquivosCSV(const char *const *arquivos, int numArquivos);
 void gerarResumoCSV(const char *const *arquivos, int numArquivos);
 void mostrarMenu(void);
+void gerarCSVPorMunicipio(void);
 
 typedef struct {
     char sigla[10];
