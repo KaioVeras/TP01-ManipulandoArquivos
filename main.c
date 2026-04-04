@@ -59,11 +59,23 @@ int main(void) {
                 aguardarEnter();
                 break;
             case 2:
-                gerarResumoCSV(arquivos, numArquivos);
+                if (!arquivoBaseConcatenadoExiste()) {
+                    printf("Arquivo 'baseDeDadosTotal.csv' nao encontrado.\n");
+                    printf("E necessario concatenar os arquivos primeiro (opcao 1).\n");
+                    printf("Nenhum arquivo de resumo foi gerado.\n");
+                } else {
+                    gerarResumoCSV(arquivos, numArquivos);
+                }
                 aguardarEnter();
                 break;
             case 3:
-                gerarCSVPorMunicipio();
+                if (!arquivoBaseConcatenadoExiste()) {
+                    printf("Arquivo 'baseDeDadosTotal.csv' nao encontrado.\n");
+                    printf("E necessario concatenar os arquivos primeiro (opcao 1).\n");
+                    printf("Nenhum arquivo de municipio foi gerado.\n");
+                } else {
+                    gerarCSVPorMunicipio();
+                }
                 aguardarEnter();
                 break;
             case 0:

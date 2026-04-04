@@ -5,31 +5,6 @@
 #include <locale.h>
 #include "lista.h"
 
-#define MAX_CAMPOS_CSV 64
-#define TAM_CAMPO_CSV 256
-#define MAX_TRIBUNAIS 64
-
-typedef struct {
-    char sigla[32];
-    double casos_novos_2026;
-    double julgados_2026;
-    double suspensos_2026;
-    double dessobrestados_2026;
-    double distm2_a;
-    double julgm2_a;
-    double suspm2_a;
-    double distm2_ant;
-    double julgm2_ant;
-    double suspm2_ant;
-    double desom2_ant;
-    double distm4_a;
-    double julgm4_a;
-    double suspm4_a;
-    double distm4_b;
-    double julgm4_b;
-    double suspm4_b;
-} AcumuladoTribunal;
-
 static FILE *abrirArquivoComPrefixos(const char *arquivo, const char *modo, char *caminhoResolvido, size_t tamanhoCaminho) {
     const char *prefixos[] = {"", "../"};
 
@@ -43,6 +18,20 @@ static FILE *abrirArquivoComPrefixos(const char *arquivo, const char *modo, char
 
     caminhoResolvido[0] = '\0';
     return NULL;
+}
+
+int arquivoBaseConcatenadoExiste(void) {
+    const char *caminhos[] = {"baseDeDadosTotal.csv", "../baseDeDadosTotal.csv"};
+
+    for (size_t i = 0; i < sizeof(caminhos) / sizeof(caminhos[0]); i++) {
+        FILE *arquivo = fopen(caminhos[i], "r");
+        if (arquivo != NULL) {
+            fclose(arquivo);
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 static double converterNumero(const char *texto) {
@@ -114,8 +103,8 @@ static void converterSeparadorLinha(const char *origem, char *destino, size_t ta
             emAspas = !emAspas;
         }
 
-        if (c == ',' && !emAspas) {
-            c = ';';
+        if (c == ';' && !emAspas) {
+            c = ',';
         }
 
         destino[j++] = c;
@@ -173,7 +162,7 @@ void aguardarEnter(void) {
     fgets(bufferEspera, sizeof(bufferEspera), stdin);
 }
 
-void concatenarArquivosCSV(const char *const *arquivos, int numArquivos) {
+int concatenarArquivosCSV(const char *const *arquivos, int numArquivos) {
     FILE *entrada, *saida;
     char buffer[40000];
     char linhaConvertida[40000];
@@ -182,7 +171,7 @@ void concatenarArquivosCSV(const char *const *arquivos, int numArquivos) {
     saida = fopen("baseDeDadosTotal.csv", "w");
     if (saida == NULL) {
         perror("Erro ao criar arquivo de saída");
-        return;
+        return 0;
     }
 
     for (int i = 0; i < numArquivos; i++) {
@@ -208,6 +197,7 @@ void concatenarArquivosCSV(const char *const *arquivos, int numArquivos) {
 
     fclose(saida);
     printf("Arquivos concatenados com sucesso em 'baseDeDadosTotal.csv'.\n");
+    return 1;
 }
 
 void gerarResumoCSV(const char *const *arquivos, int numArquivos) {
@@ -401,17 +391,16 @@ void gerarCSVPorMunicipio(void) {
 
     char nomeArquivo[128];
     snprintf(nomeArquivo, sizeof(nomeArquivo), "%s.csv", municipio);
-    FILE *saida = fopen(nomeArquivo, "w");
-    if (saida == NULL) {
-        perror("Erro ao criar arquivo de municipio");
-        fclose(entrada);
-        return;
-    }
+    FILE *saida = NULL;
 
     char linha[40000];
-    // Copia cabeçalho
-    if (fgets(linha, sizeof(linha), entrada)) {
-        fprintf(saida, "%s", linha);
+    char cabecalho[40000];
+
+    // Copia cabeçalho apenas quando houver ao menos uma ocorrencia.
+    if (fgets(cabecalho, sizeof(cabecalho), entrada) == NULL) {
+        printf("Arquivo baseDeDadosTotal.csv vazio.\n");
+        fclose(entrada);
+        return;
     }
 
     while (fgets(linha, sizeof(linha), entrada)) {
@@ -425,18 +414,30 @@ void gerarCSVPorMunicipio(void) {
         }
 
         if (qtdCampos > municipio_oj && strcmp(campos[municipio_oj], municipio) == 0) {
+            if (saida == NULL) {
+                saida = fopen(nomeArquivo, "w");
+                if (saida == NULL) {
+                    perror("Erro ao criar arquivo de municipio");
+                    fclose(entrada);
+                    return;
+                }
+
+                fprintf(saida, "%s", cabecalho);
+            }
+
             fprintf(saida, "%s", linha);
             totalOcorrencias++;
         }
     }
 
     fclose(entrada);
-    fclose(saida);
 
-    printf("Arquivo '%s' gerado com sucesso.\n", nomeArquivo);
-    printf("Total de ocorrencias encontradas para '%s': %d\n", municipio, totalOcorrencias);
-
-    if (totalOcorrencias == 0) {
+    if (saida != NULL) {
+        fclose(saida);
+        printf("Arquivo '%s' gerado com sucesso.\n", nomeArquivo);
+        printf("Total de ocorrencias encontradas para '%s': %d\n", municipio, totalOcorrencias);
+    } else {
         printf("Nenhum registro encontrado para o municipio informado.\n");
+        printf("O arquivo '%s' nao foi criado.\n", nomeArquivo);
     }
 }
