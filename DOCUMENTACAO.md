@@ -336,7 +336,7 @@ Pausa execução até usuário pressionar ENTER
 ```
 ┌─────────────────────────────────────────────┐
 │   27 Arquivos CSV (teste_TRE-*.csv)         │
-│   (um por estado)                            │
+│   (um por estado)                           │
 └────────────────────┬────────────────────────┘
                      │ Opção 1: Concatenar
                      ↓
