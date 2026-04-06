@@ -13,37 +13,25 @@ Navegação rápida pela documentação do projeto.
    - Estrutura de arquivos
    - Formato CSV esperado
 
-### 2. [DOCUMENTACAO.md](DOCUMENTACAO.md) - Técnico Profundo
+### 2. [DOCUMENTACAO.md](DOCUMENTACAO.md) - Técnico Profundo e Validação
    - Visão geral técnica
    - Estruturas de dados detalhadas
    - Explicação de cada função
    - Algoritmos importantes
    - Tratamento de erros
-
-### 3. [GUIA_DE_APRESENTACAO.md](GUIA_DE_APRESENTACAO.md) - Para o Professor
-   - Introdução (como começar a falar)
-   - Escopo de funcionalidades
-   - Arquitetura do código
-   - Detalhes técnicos importantes
-   - Exemplo de uso prático
-   - Desafios superados
-   - Testes sugeridos
-   - Dicas de apresentação
-
-### 4. [FAQ.md](FAQ.md) - Perguntas/Respostas
-   - 15+ perguntas frequentes
-   - Respostas técnicas
-   - Respostas a críticas possíveis
-   - Checklist para apresentação
-
-### 5. [EXEMPLOS_DE_SAIDA.md](EXEMPLOS_DE_SAIDA.md) - Validação
    - Execução normal esperada
    - Arquivos gerados (amostras)
    - Casos de erro
    - Testes de robustez
    - Performance esperada
 
-### 6. [INDICE_DE_REFERENCIA.md](INDICE_DE_REFERENCIA.md) - Você está aqui! 🔍
+### 3. [FAQ.md](FAQ.md) - Perguntas/Respostas
+   - 15+ perguntas frequentes
+   - Respostas técnicas
+   - Respostas a críticas possíveis
+   - Checklist para apresentação
+
+### 4. [INDICE_DE_REFERENCIA.md](INDICE_DE_REFERENCIA.md) - Você está aqui! 🔍
 
 ---
 
@@ -58,9 +46,6 @@ Navegação rápida pela documentação do projeto.
 ### "Como se compila?"
 → **README.md** → Seção "Como Compilar e Executar"
 
-### "Como apresentar para o professor?"
-→ **GUIA_DE_APRESENTACAO.md** → Seção "Introdução"
-
 ### "Como funciona o parsing CSV?"
 → **DOCUMENTACAO.md** → Seção "Funções de Parsing CSV"
 
@@ -68,10 +53,10 @@ Navegação rápida pela documentação do projeto.
 → **FAQ.md** → Perguntas iniciadas com "Por que"
 
 ### "O que deve ser a saída?"
-→ **EXEMPLOS_DE_SAIDA.md** → Seção correspondente
+→ **DOCUMENTACAO.md** → Seção correspondente
 
 ### "Meu código está certo?"
-→ **EXEMPLOS_DE_SAIDA.md** → Compare suas saídas
+→ **DOCUMENTACAO.md** → Compare suas saídas
 
 ### "Qual é a explicação das 5 metas?"
 → **README.md** → Seção "Funcionalidades → Opção 2"
@@ -101,13 +86,12 @@ Navegação rápida pela documentação do projeto.
 
 ### Caso: Preparando apresentação para professor
 1. Leia **README.md** completamente
-2. Revise **GUIA_DE_APRESENTACAO.md** seções 1-5
-3. Consulte **FAQ.md** para ter respostas prontas
-4. Estude **DOCUMENTACAO.md** seção "Algoritmos Importantes"
+2. Consulte **FAQ.md** para ter respostas prontas
+3. Estude **DOCUMENTACAO.md** seção "Algoritmos Importantes"
 
 ### Caso: Testando validação do código
 1. Compile: `gcc -o main main.c lista.c`
-2. Consulte **EXEMPLOS_DE_SAIDA.md**
+2. Consulte **DOCUMENTACAO.md**
 3. Execute cada cenário (1, 2, 3, erros)
 4. Compare saída esperada com sua saída
 
@@ -123,7 +107,7 @@ Navegação rápida pela documentação do projeto.
 4. Verifique comentários no código
 
 ### Caso: Extensão/Melhoria do projeto
-1. Verifique **GUIA_DE_APRESENTACAO.md** → "Possíveis Extensões"
+1. Verifique **DOCUMENTACAO.md** para pontos de melhoria
 2. Estude **DOCUMENTACAO.md** → "Algoritmos Importantes"
 3. Considere impacto nas estruturas de dados
 
@@ -161,11 +145,9 @@ Por Documento:
 | Documento | Tempo | Mínimo | Máximo |
 |-----------|-------|--------|--------|
 | README.md | 10 min | 5 min | 15 min |
-| DOCUMENTACAO.md | 25 min | 15 min | 40 min |
-| GUIA_DE_APRESENTACAO.md | 15 min | 10 min | 25 min |
+| DOCUMENTACAO.md | 35 min | 20 min | 60 min |
 | FAQ.md | 10 min | 5 min | 20 min |
-| EXEMPLOS_DE_SAIDA.md | 10 min | 5 min | 20 min |
-| **TOTAL** | **70 min** | **40 min** | **120 min** |
+| **TOTAL** | **55 min** | **30 min** | **95 min** |
 
 ---
 
@@ -175,9 +157,8 @@ Para apresentação sem nervosismo:
 
 - [ ] Li **README.md** completamente
 - [ ] Entendi as 3 funcionalidades
-- [ ] Revisei **GUIA_DE_APRESENTACAO.md** seções 1-5
 - [ ] Consulti **FAQ.md** para respostas rápidas
-- [ ] Testei código e validei com **EXEMPLOS_DE_SAIDA.md**
+- [ ] Testei código e validei com **DOCUMENTACAO.md**
 - [ ] Entendi como funciona o CSV parsing
 - [ ] Posso explicar as 5 metas judiciais
 - [ ] Sei responder "Por que" de 3 decisões de design
@@ -193,27 +174,17 @@ ação
 ```
 README.md
   ├─ remete para → DOCUMENTACAO.md (detalhes técnicos)
-  ├─ remete para → EXEMPLOS_DE_SAIDA.md (validação)
-  └─ remete para → GUIA_DE_APRESENTACAO.md (apresentação)
+  └─ remete para → DOCUMENTACAO.md (validação)
 
 DOCUMENTACAO.md
   ├─ remete para → README.md (conceitos básicos)
   ├─ remete para → FAQ.md (design decisions)
   └─ remete para → código comentado (main.c, lista.c)
 
-GUIA_DE_APRESENTACAO.md
-  ├─ remete para → README.md (visão geral)
-  ├─ remete para → DOCUMENTACAO.md (detalhes)
-  └─ remete para → FAQ.md (respostas)
-
 FAQ.md
   ├─ remete para → DOCUMENTACAO.md (fundamentação)
   ├─ remete para → README.md (contexto)
-  └─ remete para → EXEMPLOS_DE_SAIDA.md (validação)
-
-EXEMPLOS_DE_SAIDA.md
-  ├─ remete para → README.md (interpretação)
-  └─ remete para → DOCUMENTACAO.md (cálculos das metas)
+  └─ remete para → DOCUMENTACAO.md (validação)
 ```
 
 ---
@@ -222,8 +193,8 @@ EXEMPLOS_DE_SAIDA.md
 
 ### Semana 1: Compreensão Geral
 - Dia 1: README.md completo
-- Dia 2: GUIA_DE_APRESENTACAO.md seções 1-3
-- Dia 3: EXEMPLOS_DE_SAIDA.md - executar código
+- Dia 2: DOCUMENTACAO.md seções introdutórias
+- Dia 3: DOCUMENTACAO.md seção de exemplos de saída
 
 ### Semana 2: Aprofundamento Técnico
 - Dia 4: DOCUMENTACAO.md - estruturas de dados
@@ -231,7 +202,7 @@ EXEMPLOS_DE_SAIDA.md
 - Dia 6: FAQ.md - consolidar conhecimento
 
 ### Semana 3: Apresentação
-- Dia 7: GUIA_DE_APRESENTACAO.md completo
+- Dia 7: DOCUMENTACAO.md revisão final
 - Dia 8: Ensaiar apresentação (mock presentation)
 - Dia 9: Dia da apresentação!
 
@@ -320,10 +291,10 @@ Quando apresentar, destaque:
 ## 🎯 Foco por Públic-alvo
 
 ### Para o Professor
-→ Ler: **GUIA_DE_APRESENTAÇÃO.md** completo
+→ Ler: **DOCUMENTACAO.md** + **FAQ.md**
 
 ### Para Colegas da Equipe
-→ Ler: **README.md** + **EXEMPLOS_DE_SAIDA.md**
+→ Ler: **README.md** + **DOCUMENTACAO.md**
 
 ### Para o Próprio Time Técnico
 → Ler: **DOCUMENTACAO.md** + código comentado
@@ -336,8 +307,8 @@ Quando apresentar, destaque:
 ## 📌 Últimas Dicas
 
 1. **Não memorize**. Use este índice para localizar respostas.
-2. **Pratique a apresentação** usando **GUIA_DE_APRESENTAÇÃO.md**
-3. **Valide sempre** com **EXEMPLOS_DE_SAIDA.md**
+2. **Pratique a apresentação** usando **README.md** e **DOCUMENTACAO.md**
+3. **Valide sempre** com **DOCUMENTACAO.md**
 4. **Tenha respostas prontas** consultando **FAQ.md**
 5. **Código é referência final** - consulte comentários se dúvida!
 
