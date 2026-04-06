@@ -859,3 +859,8 @@ MG;42000;93.876543;138.765432;86.765432;89.234567;83.765432
 Estes são os comportamentos **esperados** do seu programa quando implementado corretamente!
 
 Compare suas saídas com estes exemplos para validar que tudo está funcionando apropriadamente. 🎯
+
+================================================================================
+                         Desenvolvido em 2026
+                    Disciplina: Programação C (TP01)
+================================================================================

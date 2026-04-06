@@ -343,4 +343,7 @@ cd para_o_diretório_correto
 - [ ] Acentuação exibe corretamente
 - [ ] Falha graciosamente em casos extremos
 
-Boa sorte! 🍀
+================================================================================
+                         Desenvolvido em 2026
+                    Disciplina: Programação C (TP01)
+================================================================================
