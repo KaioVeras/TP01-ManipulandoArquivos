@@ -107,48 +107,6 @@ static double calcularPercentual(double numerador, double denominador, double fa
     return (numerador / denominador) * fator;
 }
 
-static int extrairCamposCSV(const char *linha, char campos[][TAM_CAMPO_CSV], int maxCampos) {
-    int indiceCampo = 0;
-    int indiceChar = 0;
-    int emAspas = 0;
-
-    for (int i = 0; linha[i] != '\0'; i++) {
-        char c = linha[i];
-
-        if (c == '\r' || c == '\n') {
-            break;
-        }
-
-        if (c == '"') {
-            emAspas = !emAspas;
-            continue;
-        }
-
-        if ((c == ',' || c == ';') && !emAspas) {
-            campos[indiceCampo][indiceChar] = '\0';
-            indiceCampo++;
-            indiceChar = 0;
-
-            if (indiceCampo >= maxCampos) {
-                return maxCampos;
-            }
-
-            continue;
-        }
-
-        if (indiceChar < TAM_CAMPO_CSV - 1) {
-            campos[indiceCampo][indiceChar++] = c;
-        }
-    }
-
-    if (indiceCampo < maxCampos) {
-        campos[indiceCampo][indiceChar] = '\0';
-        indiceCampo++;
-    }
-
-    return indiceCampo;
-}
-
 /*
  * FUNÇÃO: extrairCamposCSV
  * PROPÓSITO: Fazer parsing de uma linha CSV respeitando campos entre aspas
